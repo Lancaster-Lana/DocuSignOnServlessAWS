@@ -1,0 +1,90 @@
+﻿@model DocuSignOnServlessAWS.Models.ElectornicConsentRequestViewModel
+
+@{
+    ViewBag.Title= "SendDocumentEmailToSign";
+}
+
+<div class="col-md-10 center-block well">
+    @using (Html.BeginForm("SendDocumentEmailToSign", "DocuSign", FormMethod.Post, new {enctype = "multipart/form-data"}))
+    {
+    @*<form method="post" action="DocuSign/SendDocumentEmailToSign" autocomplete="off">*@
+    <div class="row">
+        <div class="col-md-6" disabled>
+            <fieldset>
+                <legend>Sender</legend>
+                <div class="form-group">
+                    <label for="SenderUsername" class="control-label col-md-4">Username\email</label>
+                    <input type="email" required id="SenderUsername" name="SenderUsername" value="@Model.SenderUsername" class="form-control col-md-8" />
+                    @*@Html.ValidationMessageFor(i => i.SenderUsername, "Sender DocuSign email required")*@
+                </div>
+                <div class="form-group">
+                    <label for="SenderPassword" class="control-label col-md-4">Password</label>
+                    <input type="password" required id="SenderPassword" name="SenderPassword" value="@Model.SenderPassword" class="form-control col-md-8" />
+                    @*@Html.ValidationMessageFor(i => i.SenderPassword, "Sender DocuSign password required")*@
+                </div>
+                <div class="form-group">
+                    <label for="SenderIntegratorKey" class="control-label col-md-4">IntegratorKey</label>
+                    <input type="text" required id="SenderIntegratorKey" name="SenderIntegratorKey" value="@Model.SenderIntegratorKey" class="form-control col-md-8" />
+                    @*@Html.ValidationMessageFor(i => i.SenderIntegratorKey, "IntegratorKey required")*@
+                </div>
+            </fieldset>
+        </div>
+
+        <div class="col-md-6">
+            <fieldset>
+                <legend>Receiver</legend>
+                <div class="form-group">
+                    <label for="RecipientName" class="control-label col-md-4">Name</label>
+                    <input type="text" required id="RecipientName" name="RecipientName" value="@Model.RecipientName" class="form-control col-md-8" />
+                    @*@Html.ValidationMessageFor(i => i.RecipientName, "Name required")*@
+                </div>
+                <div class="form-group">
+                    <label for="RecipientEmail" class="control-label col-md-4" required>email</label>
+                    <input type="email" required id="RecipientEmail" name="RecipientEmail" value="@Model.RecipientEmail" class="form-control col-md-8" />
+                    @*@Html.ValidationMessageFor(i => i.RecipientEmail, "Email required")*@
+                </div>
+            </fieldset>
+            <fieldset>
+                <legend>Sign a document </legend>
+                @*<input download id="SignTest1File" name="SignTest1File" required class="form-control col-md-8" value="C:\defaultPatientAgreement.pdf" />*@
+                <input type="file" name="files[]" download required multiple="" class="form-control col-md-4" />
+
+                <button class="btn btn-success" id="btnSend" type="submit">Send Document</button>
+            </fieldset>
+        </div>
+        <p class="label label-danger">@Html.ValidationSummary()</p>
+
+    </div>
+    }
+
+    @if (ViewBag.Error != null)
+    {
+    <label class="label label-danger">@ViewBag.Error</label>
+    }
+
+    @if (Model.RecipientDocumentPreview != null)
+    {
+    <div class="row col-md-12">
+        <div class="form-group">
+            <object data="@Model.RecipientDocumentPreview.Url" style="min-height: 450px; width: 100%;">
+                <embed src="@Model.RecipientDocumentPreview.Url" alt="pdf" pluginspage="http://www.adobe.com/products/acrobat/readstep2.html" />
+            </object>
+            <hr />
+            @*<iframe id="consentFrame" width="100%" height="400px" src='@Model.RecipientDocumentPreview.Url'></iframe>*@
+        </div>
+    </div>
+    }
+</div>
+
+@*@section scripts
+    {
+        <script type="text/javascript">
+
+            $('#DownloadFileDoc').unbind('change');
+            $('#DownloadFileDoc').change(function(event) {
+                var file = event.target.files[0];
+                var tmppath = URL.createObjectURL(file);
+                $("#SignTest1File").val(tmppath);
+            });
+        </script>
+    }*@
